@@ -12,14 +12,13 @@ import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrPackageFragment
 import org.jetbrains.kotlin.ir.declarations.IrTypeParameter
+import org.jetbrains.kotlin.ir.descriptors.IrBuiltIns
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
-import org.jetbrains.kotlin.ir.types.IrDynamicType
-import org.jetbrains.kotlin.ir.types.IrSimpleType
-import org.jetbrains.kotlin.ir.types.IrType
-import org.jetbrains.kotlin.ir.types.classifierOrNull
+import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.types.AbstractTypeChecker
 import org.jetbrains.kotlin.utils.DFS
 
 val kotlinPackageFqn = FqName.fromSegments(listOf("kotlin"))
@@ -93,3 +92,18 @@ private inline fun IrType.isTypeFromKotlinPackage(namePredicate: (Name) -> Boole
 }
 
 fun IrType.isPrimitiveArray() = isTypeFromKotlinPackage { it in FQ_NAMES.primitiveArrayTypeShortNames }
+
+fun IrType.isSubtypeOf(superType: IrType, irBuiltIns: IrBuiltIns) =
+    AbstractTypeChecker.isSubtypeOf(IrTypeCheckerContext(irBuiltIns), this, superType)
+
+fun IrType.isSubtypeOfClass(superClass: IrClassSymbol): Boolean {
+    if (this !is IrSimpleType) return false
+    val klassifier = classifier
+    if (klassifier == superClass) return true
+    val superTypes = when (klassifier) {
+        is IrTypeParameterSymbol -> klassifier.owner.superTypes
+        is IrClassSymbol -> klassifier.owner.superTypes
+        else -> error("  ")
+    }
+    return superTypes.any { it.isSubtypeOfClass(superClass) }
+}

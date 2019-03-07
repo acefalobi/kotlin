@@ -19,6 +19,9 @@ package org.jetbrains.kotlin.ir.symbols
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrReturnableBlock
+import org.jetbrains.kotlin.types.TypeConstructor
+import org.jetbrains.kotlin.types.model.TypeConstructorMarker
+import org.jetbrains.kotlin.types.model.TypeParameterMarker
 
 interface IrSymbol {
     val owner: IrSymbolOwner
@@ -45,12 +48,12 @@ interface IrEnumEntrySymbol : IrBindableSymbol<ClassDescriptor, IrEnumEntry>
 
 interface IrFieldSymbol : IrBindableSymbol<PropertyDescriptor, IrField>
 
-interface IrClassifierSymbol : IrSymbol {
+interface IrClassifierSymbol : IrSymbol, TypeConstructorMarker {
     override val descriptor: ClassifierDescriptor
 }
 
 interface IrClassSymbol : IrClassifierSymbol, IrBindableSymbol<ClassDescriptor, IrClass>
-interface IrTypeParameterSymbol : IrClassifierSymbol, IrBindableSymbol<TypeParameterDescriptor, IrTypeParameter>
+interface IrTypeParameterSymbol : IrClassifierSymbol, IrBindableSymbol<TypeParameterDescriptor, IrTypeParameter>, TypeParameterMarker
 
 interface IrValueSymbol : IrSymbol {
     override val descriptor: ValueDescriptor

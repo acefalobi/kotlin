@@ -6,12 +6,10 @@
 package org.jetbrains.kotlin.backend.common.utils
 
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.toIrType
 import org.jetbrains.kotlin.ir.types.toKotlinType
 import org.jetbrains.kotlin.ir.util.SymbolTable
-import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.types.CommonSupertypes
 import org.jetbrains.kotlin.types.typeUtil.isSubtypeOf
 
@@ -24,8 +22,7 @@ fun IrType.getPrimitiveArrayElementType() = KotlinBuiltIns.getPrimitiveArrayElem
 fun List<IrType>.commonSupertype(symbolTable: SymbolTable) =
     CommonSupertypes.commonSupertype(map(IrType::toKotlinType)).toIrType(symbolTable)!!
 
+// NOTE: actually this checker has pure IrType-based implementation but there is still issue in JVM IR with non-uniq
+// irBuiltIns symbols so we should keep this awhile
 @Deprecated("Use pure Ir helper")
-fun IrType.isSubtypeOf(superType: IrType) = toKotlinType().isSubtypeOf(superType.toKotlinType())
-
-@Deprecated("Use pure Ir helper")
-fun IrType.isSubtypeOfClass(superClass: IrClassSymbol) = DescriptorUtils.isSubtypeOfClass(toKotlinType(), superClass.descriptor)
+fun IrType.isSubtypeOf(superType: IrType): Boolean = toKotlinType().isSubtypeOf(superType.toKotlinType())

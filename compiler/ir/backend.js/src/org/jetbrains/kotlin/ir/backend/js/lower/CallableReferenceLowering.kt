@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.backend.common.FileLoweringPass
 import org.jetbrains.kotlin.backend.common.descriptors.WrappedTypeParameterDescriptor
 import org.jetbrains.kotlin.backend.common.descriptors.WrappedValueParameterDescriptor
 import org.jetbrains.kotlin.backend.common.lower.BOUND_VALUE_PARAMETER
-import org.jetbrains.kotlin.backend.common.utils.isSubtypeOf
 import org.jetbrains.kotlin.descriptors.Visibilities
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
@@ -31,6 +30,7 @@ import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.IrTypeProjection
 import org.jetbrains.kotlin.ir.types.impl.IrSimpleTypeImpl
 import org.jetbrains.kotlin.ir.util.isInlined
+import org.jetbrains.kotlin.ir.util.isSubtypeOf
 import org.jetbrains.kotlin.ir.visitors.IrElementTransformerVoid
 import org.jetbrains.kotlin.ir.visitors.transformChildrenVoid
 
@@ -535,7 +535,7 @@ class CallableReferenceLowering(val context: JsIrBackendContext) : FileLoweringP
             val closureParam = unboundParamSymbols[i].owner
             val value = JsIrBuilder.buildGetValue(unboundParamSymbols[i])
             val parameter = callTarget.valueParameters[j]
-            val argument = if (parameter.varargElementType?.let { closureParam.type.isSubtypeOf(it) } == true) {
+            val argument = if (parameter.varargElementType?.let { closureParam.type.isSubtypeOf(it, context.irBuiltIns) } == true) {
                 // fun foo(x: X, y: vararg Y): Z
                 // val r: (X, Y) -> Z = ::foo
                 IrVarargImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, parameter.type, parameter.varargElementType!!, listOf(value))

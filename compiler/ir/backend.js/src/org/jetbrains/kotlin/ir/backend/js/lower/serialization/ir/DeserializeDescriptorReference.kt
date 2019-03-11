@@ -76,7 +76,8 @@ abstract class DescriptorReferenceDeserializer(
         isDefaultConstructor: Boolean = false,
         isFakeOverride: Boolean = false,
         isGetter: Boolean = false,
-        isSetter: Boolean = false
+        isSetter: Boolean = false,
+        isTypeParameter: Boolean = false
     ): DeclarationDescriptor {
         val packageFqName = packageFqNameString.let {
             if (it == "<root>") FqName.ROOT else FqName(it)
@@ -120,6 +121,10 @@ abstract class DescriptorReferenceDeserializer(
         if (isEnumSpecial) {
             return clazz!!.getStaticScope()
                 .getContributedFunctions(Name.identifier(name), NoLookupLocation.FROM_BACKEND).single()
+        }
+
+        if (isTypeParameter) {
+            return clazz!!.declaredTypeParameters.first { it.name.asString() == name }
         }
 
         if (protoIndex?.let { checkIfSpecialDescriptorId(it) } == true) {

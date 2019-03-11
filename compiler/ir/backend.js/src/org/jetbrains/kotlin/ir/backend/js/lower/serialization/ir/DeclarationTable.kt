@@ -45,7 +45,7 @@ class DeclarationTable(val builtIns: IrBuiltIns, val descriptorTable: Descriptor
         } else if (value.origin == IrDeclarationOrigin.FAKE_OVERRIDE ||
             !value.isExported()
             || value is IrVariable
-            || value is IrTypeParameter
+            || (value is IrTypeParameter && value.parent !is IrClass)
             || value is IrValueParameter
             || value is IrAnonymousInitializerImpl
         ) {

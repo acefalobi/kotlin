@@ -23,6 +23,8 @@ internal fun IrDeclaration.uniqSymbolName(): String = when (this) {
     -> this.symbolName
     is IrEnumEntry
     -> this.symbolName
+    is IrTypeParameter
+    -> this.symbolName
     else -> error("Unexpected exported declaration: $this")
 }
 
@@ -55,6 +57,18 @@ private val IrEnumEntry.symbolName: String
             if (it.isRoot) "" else "$it."
         }
         return "kenumentry:$containingDeclarationPart$name"
+    }
+
+private val IrTypeParameter.symbolName: String
+    get() {
+        val container = parent
+        val containingDeclarationPart = when (container) {
+            is IrFunction -> container.uniqFunctionName
+            is IrClass -> container.typeInfoSymbolName
+            else -> error("SSS")
+        }
+        val result = "ktypeparam:$containingDeclarationPart:$name"
+        return result
     }
 
 // This is basicly the same as .symbolName, but disambiguates external functions with the same C name.

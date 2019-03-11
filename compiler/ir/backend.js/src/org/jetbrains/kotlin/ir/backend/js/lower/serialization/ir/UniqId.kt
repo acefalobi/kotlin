@@ -52,6 +52,7 @@ fun DeclarationDescriptor.getUniqId(): JsKlibMetadataProtoBuf.DescriptorUniqId? 
     is DeserializedSimpleFunctionDescriptor     -> this.proto.tryGetExtension(JsKlibMetadataProtoBuf.functionUniqId)
     is DeserializedPropertyDescriptor           -> this.proto.tryGetExtension(JsKlibMetadataProtoBuf.propertyUniqId)
     is DeserializedClassConstructorDescriptor   -> this.proto.tryGetExtension(JsKlibMetadataProtoBuf.constructorUniqId)
+    is DeserializedTypeParameterDescriptor      -> this.proto.tryGetExtension(JsKlibMetadataProtoBuf.typeParamUniqId)
     else -> null
 }
 

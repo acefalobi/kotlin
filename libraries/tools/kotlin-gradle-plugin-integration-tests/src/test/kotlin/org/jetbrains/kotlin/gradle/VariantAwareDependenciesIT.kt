@@ -70,7 +70,12 @@ class VariantAwareDependenciesIT : BaseGradleIT() {
 
     @Test
     fun testNonKotlinJvmAppResolvesMppLib() {
-        val outerProject = Project("sample-lib", gradleVersion, "new-mpp-lib-and-app")
+        val outerProject = Project(
+            "sample-lib",
+            // In Gradle 5.3, the variants of a Kotlin MPP can't be disambiguated in a pure Java project, see KT-30378
+            GradleVersionRequired.InRange(gradleVersion.minVersion, "5.2.1"),
+            "new-mpp-lib-and-app"
+        )
         val innerProject = Project("simpleProject").apply {
             setupWorkingDir()
             gradleBuildScript().modify {

@@ -1169,13 +1169,6 @@ public class Float private constructor() : Number(), Comparable<Float> {
      * Converts this [Float] value to [Double].
      *
      * The resulting `Double` value represents the same numerical value as this `Float`.
-     * In particular, [Float.NEGATIVE_INFINITY] is converted to [Double.NEGATIVE_INFINITY],
-     * [Float.POSITIVE_INFINITY] to [Double.POSITIVE_INFINITY], [Float.NaN] to [Double.NaN].
-     *
-     * The sign bit of the resulting `Double` value has the same value as the sign bit of this `Float`.
-     * Numerical value of the exponent part of the resulting `Double` is equal to the exponent part of this `Float`.
-     * The most significant 23 bits of the mantissa part of the resulting `Double` value are the same as
-     * the mantissa part of this `Float` value, whereas the least significant 29 bits are filled with zeros.
      */
     public override fun toDouble(): Double
 }
@@ -1392,15 +1385,8 @@ public class Double private constructor() : Number(), Comparable<Double> {
      * Converts this [Double] value to [Float].
      *
      * The resulting value is the closest `Float` to this `Double` value.
-     * Returns [Float.NEGATIVE_INFINITY] if this value is [Double.NEGATIVE_INFINITY] or less than [Float.MIN_VALUE],
-     * [Double.POSITIVE_INFINITY] if it's [Float.POSITIVE_INFINITY] or bigger than [Float.MAX_VALUE],
-     * [Double.NaN] if it's [Float.NaN].
-     *
-     * In case when this value is in `Float.MIN_VALUE..Float.MAX_VALUE`:
-     * The sign bit of the resulting `Float` value has the same value as the sign bit of this `Double`.
-     * Numerical value of the exponent part of the resulting `Float` is equal to the exponent part of this `Double`.
-     * The mantissa part of the resulting `Float` value is represented by the most significant 23 bits of
-     * the mantissa part of this `Double` value.
+     * In case when this `Double` value is exactly between two `Float`s,
+     * the one with zero at least significant bit of mantissa is selected.
      */
     public override fun toFloat(): Float
     /** Returns this value. */

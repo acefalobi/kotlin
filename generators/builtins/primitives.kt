@@ -228,8 +228,8 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
         if (type1.isIntegral && type2.isIntegral) type1.byteSize - type2.byteSize else type1.ordinal - type2.ordinal
 
     private fun docForConversionFromFloatingToIntegral(fromFloating: PrimitiveType, toIntegral: PrimitiveType): String {
-        check(fromFloating.isFloatingPoint)
-        check(toIntegral.isIntegral)
+        require(fromFloating.isFloatingPoint)
+        require(toIntegral.isIntegral)
 
         val thisName = fromFloating.capitalized
         val otherName = toIntegral.capitalized
@@ -250,8 +250,8 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
     }
 
     private fun docForConversionFromFloatingToFloating(fromFloating: PrimitiveType, toFloating: PrimitiveType): String {
-        check(fromFloating.isFloatingPoint)
-        check(toFloating.isFloatingPoint)
+        require(fromFloating.isFloatingPoint)
+        require(toFloating.isFloatingPoint)
 
         val thisName = fromFloating.capitalized
         val otherName = toFloating.capitalized
@@ -259,35 +259,21 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
         return if (compareByDomainCapacity(toFloating, fromFloating) < 0) {
             """
              * The resulting value is the closest `$otherName` to this `$thisName` value.
-             * Returns [$otherName.NEGATIVE_INFINITY] if this value is [$thisName.NEGATIVE_INFINITY] or less than [$otherName.MIN_VALUE],
-             * [$thisName.POSITIVE_INFINITY] if it's [$otherName.POSITIVE_INFINITY] or bigger than [$otherName.MAX_VALUE],
-             * [$thisName.NaN] if it's [$otherName.NaN].
-             *
-             * In case when this value is in `$otherName.MIN_VALUE..$otherName.MAX_VALUE`:
-             * The sign bit of the resulting `$otherName` value has the same value as the sign bit of this `$thisName`.
-             * Numerical value of the exponent part of the resulting `$otherName` is equal to the exponent part of this `$thisName`.
-             * The mantissa part of the resulting `$otherName` value is represented by the most significant 23 bits of
-             * the mantissa part of this `$thisName` value.
+             * In case when this `$thisName` value is exactly between two `$otherName`s,
+             * the one with zero at least significant bit of mantissa is selected.
              */
             """
         } else {
             """
              * The resulting `$otherName` value represents the same numerical value as this `$thisName`.
-             * In particular, [$thisName.NEGATIVE_INFINITY] is converted to [$otherName.NEGATIVE_INFINITY],
-             * [$thisName.POSITIVE_INFINITY] to [$otherName.POSITIVE_INFINITY], [$thisName.NaN] to [$otherName.NaN].
-             *
-             * The sign bit of the resulting `$otherName` value has the same value as the sign bit of this `$thisName`.
-             * Numerical value of the exponent part of the resulting `$otherName` is equal to the exponent part of this `$thisName`.
-             * The most significant 23 bits of the mantissa part of the resulting `$otherName` value are the same as
-             * the mantissa part of this `$thisName` value, whereas the least significant 29 bits are filled with zeros.
              */
             """
         }
     }
 
     private fun docForConversionFromIntegralToIntegral(fromIntegral: PrimitiveType, toIntegral: PrimitiveType): String {
-        check(fromIntegral.isIntegral)
-        check(toIntegral.isIntegral)
+        require(fromIntegral.isIntegral)
+        require(toIntegral.isIntegral)
 
         val thisName = fromIntegral.capitalized
         val otherName = toIntegral.capitalized
@@ -331,8 +317,8 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
     }
 
     private fun docForConversionFromIntegralToFloating(fromIntegral: PrimitiveType, toFloating: PrimitiveType): String {
-        check(fromIntegral.isIntegral)
-        check(toFloating.isFloatingPoint)
+        require(fromIntegral.isIntegral)
+        require(toFloating.isFloatingPoint)
 
         val thisName = fromIntegral.capitalized
         val otherName = toFloating.capitalized
